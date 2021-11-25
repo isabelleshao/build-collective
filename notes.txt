@@ -1,0 +1,87 @@
+isa@isa-Swift-SF314-52G:~/Documents/GitHub/build-collective$ npm run contracts:migrate
+
+> build-collective@0.1.0 contracts:migrate /home/isa/Documents/GitHub/build-collective
+> truffle migrate --reset
+
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/BuildCollective.sol
+> Compiling ./contracts/Migrations.sol
+> Compiling ./contracts/Ownable.sol
+> Compilation warnings encountered:
+
+    project:/contracts/BuildCollective.sol:2:1: Warning: Experimental features are turned on. Do not use experimental features on live deployments.
+pragma experimental ABIEncoderV2;
+^-------------------------------^
+
+> Artifacts written to /home/isa/Documents/GitHub/build-collective/build/contracts
+> Compiled successfully using:
+   - solc: 0.5.16+commit.9c3226ce.Emscripten.clang
+
+
+
+Starting migrations...
+======================
+> Network name:    'development'
+> Network id:      5777
+> Block gas limit: 6721975 (0x6691b7)
+
+
+1634233392_initial_migration.js
+===============================
+
+   Deploying 'Migrations'
+   ----------------------
+   > transaction hash:    0x1cf3a8ac83842c5cd2bceaac8a9f2d38456d106a618021e8cafb50cc92242d40
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x96C9626eF036712Ed4208AA9BaCf9e2385F2B6F7
+   > block number:        1
+   > block timestamp:     1635676123
+   > account:             0x6e415d46E572152A3DEd9bDFB048Ea26602b35Ae
+   > balance:             99.99616114
+   > gas used:            191943 (0x2edc7)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00383886 ETH
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.00383886 ETH
+
+
+1634233492_deploy_build_collective.js
+=====================================
+
+   Deploying 'BuildCollective'
+   ---------------------------
+   > transaction hash:    0x1e566ca3d532539ed15f90358d24cfd4a1c63ee3c8ee8b6f3ec18b74abee5884
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x02436F0eb8a36e561eB00F8DaD3dDB5a43656DC6
+   > block number:        3
+   > block timestamp:     1635676123
+   > account:             0x6e415d46E572152A3DEd9bDFB048Ea26602b35Ae
+   > balance:             99.98205296
+   > gas used:            663035 (0xa1dfb)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0132607 ETH
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:           0.0132607 ETH
+
+
+Summary
+=======
+> Total deployments:   2
+> Final cost:          0.01709956 ETH
+
+
+isa@isa-Swift-SF314-52G:~/Documents/GitHub/build-collective$ 
+
+
