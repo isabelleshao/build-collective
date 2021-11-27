@@ -1,11 +1,12 @@
 <template lang="html">
-  <!--project-->
   <div class="home">
     <form @submit.prevent="createBounty">
       <card
-        title="Add a project"
+        title="Add a bounty"
         subtitle="Type directly in the input and hit enter. All spaces will be converted to _"
       >
+        for the project :
+
         <input
           type="text"
           class="input-bountyName"
@@ -30,20 +31,21 @@
           min="0"
           required="required"
         />
-
         <input type="submit" value="Submit" class="btn" />
       </card>
     </form>
   </div>
+
+  <PreviousPage />
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import Card from '@/components/Card.vue'
-import Spacer from '@/components/Spacer.vue'
+import PreviousPage from '@/views/components/PreviousPage.vue'
 export default defineComponent({
   name: 'CreateBounty',
-  components: { Card },
+  components: { Card, PreviousPage },
   setup() {
     const store = useStore()
     const address = computed(() => store.state.account.address)
@@ -59,6 +61,8 @@ export default defineComponent({
     const bountyDesc = ''
     const bountyReward = ''
     const closed = null
+    const project = null
+    const projectName = ''
 
     return {
       account,
@@ -68,6 +72,8 @@ export default defineComponent({
       bountyDesc,
       bountyReward,
       closed,
+      project,
+      projectName,
     }
   },
   methods: {
@@ -79,11 +85,9 @@ export default defineComponent({
     },
 
     async createBounty() {
-      const { contract, bountyName, bountyDesc, bountyReward, closed } = this
+      const { contract, bountyName, bountyDesc, bountyReward } = this
       const name = bountyName.trim().replace(/ /g, '_')
-      await contract.methods
-        .createBounty(bountyName, bountyDesc, bountyReward)
-        .send()
+      await contract.methods.createBounty(name, bountyDesc, bountyReward).send()
       await this.updateAccount()
       this.bountyName = ''
       this.bountyDesc = ''
@@ -103,12 +107,10 @@ export default defineComponent({
     const account = await contract.methods.user(address).call()
     if (account.registered) this.account = account
     this.projectsList = await contract.methods.getProjects().call()
-    // console.log(this.projectsList)
   },
 })
 </script>
 <style lang="css" scoped>
-/*
 .home {
   padding: 24px;
   flex: 1;
@@ -118,26 +120,10 @@ export default defineComponent({
   max-width: 500px;
   margin: auto;
 }
-.explanations {
-  padding: 12px;
-}
-.button-link {
-  display: inline;
-  appearance: none;
-  border: none;
-  background: none;
-  color: inherit;
-  text-decoration: underline;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-}
-.input-username,
-.input-projectname,
-.input-companyname {
+
+.input-bountyName,
+.input-bountyDescr,
+.input-bountyReward {
   background: transparent;
   border: none;
   padding: 12px;
@@ -147,5 +133,12 @@ export default defineComponent({
   font-family: inherit;
   font-size: 1.3rem;
 }
-*/
+
+.btn {
+  margin: auto;
+  width: 100%;
+  background: rgb(89, 25, 138);
+  color: white;
+  font-size: 1.3rem;
+}
 </style>

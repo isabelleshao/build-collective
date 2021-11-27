@@ -20,6 +20,7 @@ contract BuildCollective is Ownable {
 
   /*Create projects on which we can give money for sponsoring. Each project has a balance, a name and a list of contributors. Each project belongs to a user or an entreprise. The money given to the project can be send to contributors, and contributors only.*/
   struct Project {
+    uint256 id;
     string name;
     address owner;
     address[] contributors;
@@ -33,6 +34,7 @@ contract BuildCollective is Ownable {
 On a project, you should be able to create bounties. Bounties are bugs with a reward: if you spot a bug and you want to have it fix quickly, open a bounty and put some eth on it. When the fix is pushed, the author will get the eth. He’s a bounty hunter.*/
 
   struct Bounty {
+    uint256 id;
     string name;
     string descr;
     uint256 reward;
@@ -50,8 +52,12 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
   mapping(address => Project[]) public ownerToProject;
   mapping(address => Bounty[]) public projectToBounty;
 
+  uint256 cptProjectId = 0;
+  uint256 cptBountyId = 0;
+
   Project[] projectsList;
   Company[] companiesList;
+  Bounty[] bountiesList;
 
   event UserSignedUp(address indexed userAddress, User indexed user);
   event CompanySignedUp(
@@ -97,6 +103,22 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
     return companiesList;
   }
 
+  function getBounties() public view returns (Bounty[] memory) {
+    require(users[msg.sender].registered);
+
+    return bountiesList;
+  }
+
+  function getProjectById(uint256 index) public view returns (Project memory) {
+    require(users[msg.sender].registered);
+    return projectsList[index];
+  }
+
+  function getBountyById(uint256 index) public view returns (Bounty memory) {
+    require(users[msg.sender].registered);
+    return bountiesList[index];
+  }
+
   ////USERS
   function signUp(string memory username) public returns (User memory) {
     require(bytes(username).length > 0);
@@ -134,6 +156,7 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
     contributors[0] = msg.sender;
 
     projects[msg.sender] = Project(
+      cptProjectId,
       name,
       msg.sender,
       contributors,
@@ -142,9 +165,17 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
       createdByUser
     );
     projectsList.push(
-      Project(name, msg.sender, contributors, balance, gitUrl, createdByUser)
+      Project(
+        cptProjectId,
+        name,
+        msg.sender,
+        contributors,
+        balance,
+        gitUrl,
+        createdByUser
+      )
     );
-
+    cptProjectId++;
     emit ProjectCreated(msg.sender, projects[msg.sender]);
   }
 
@@ -156,6 +187,7 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
     address proj
   ) public returns (Bounty memory) {
     bounties[msg.sender] = Bounty(
+      cptBountyId,
       name,
       descr,
       reward,
@@ -164,6 +196,20 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
       proj,
       false
     );
+
+    bountiesList.push(
+      Bounty(
+        cptBountyId,
+        name,
+        descr,
+        reward,
+        address(0),
+        msg.sender,
+        proj,
+        false
+      )
+    );
+    cptBountyId++;
     emit BountyCreated(msg.sender, bounties[msg.sender]);
   }
 }

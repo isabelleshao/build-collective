@@ -132,4 +132,12 @@ export default defineComponent({
   font-family: inherit;
   font-size: 1.3rem;
 }
+
+.btn {
+  margin: auto;
+  width: 100%;
+  background: rgb(89, 25, 138);
+  color: white;
+  font-size: 1.3rem;
+}
 </style>

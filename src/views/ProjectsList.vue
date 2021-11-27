@@ -1,25 +1,6 @@
 <template lang="html">
   <div v-for="projet in projectsList" :key="projet.name">
-    <card :title="projet.name" subtitle="Hooray">
-      <div class="explanations">
-        <ul>
-          <li><b>name</b>: {{ projet.name }}</li>
-          <li><b>owner</b>: {{ projet.owner }}</li>
-          <li>
-            <b>owner status</b>: {{ projet.createdByUser ? 'user' : 'company' }}
-          </li>
-          <li><b>balance</b>: {{ projet.balance }}</li>
-          <li><b>contributors</b>: {{ projet.contributors }}</li>
-          <li><b>Url Git Repo</b>: {{ projet.gitAddress }}</li>
-        </ul>
-
-        On your account on the contract, you have
-        {{ account.balance }} tokens. If you click
-        <button class="button-link" @click="addTokens">here</button>, you can
-        add some token to your account. Just give it a try! And think to put an
-        eye on Ganache!
-      </div>
-    </card>
+    <Project :projet="projet" />
     <spacer :size="24" />
   </div>
   <PreviousPage />
@@ -27,12 +8,12 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
-import Card from '@/components/Card.vue'
 import Spacer from '@/components/Spacer.vue'
 import PreviousPage from '@/views/components/PreviousPage.vue'
+import Project from '@/views/components/Project.vue'
 export default defineComponent({
   name: 'ProjectsList',
-  components: { Card, Spacer, PreviousPage },
+  components: { Spacer, PreviousPage, Project },
   setup() {
     const store = useStore()
     const address = computed(() => store.state.account.address)
