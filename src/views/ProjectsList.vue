@@ -1,34 +1,33 @@
 <template lang="html">
-  <!--ACCOUNT-->
+  <div v-for="projet in projectsList" :key="projet.id">
+    <card :title="projet.name" subtitle="Hooray">
+      <div class="explanations">
+        <ul>
+          <li><b>name</b>: {{ projet.name }}</li>
+          <li><b>owner</b>: {{ projet.owner }}</li>
+          <li><b>balance</b>: {{ projet.balance }}</li>
+          <li><b>contributors</b>: {{ projet.contributors }}</li>
+          <li><b>Url Git Repo</b>: {{ projet.gitAddress }}</li>
+        </ul>
 
-  <AccountUser />
-  <AccountCompany />
-  <CreateProject ref="proj" @projectCreated="updateAccount" />
-  <div id="linkToProjects">
-    <card title="Check every projects!" subtitle="Hooray" :blue="true">
-      <collective-button :transparent="true" @click="goToProjects">
-        Check every projects!
-      </collective-button>
+        On your account on the contract, you have
+        {{ account.balance }} tokens. If you click
+        <button class="button-link" @click="addTokens">here</button>, you can
+        add some token to your account. Just give it a try! And think to put an
+        eye on Ganache!
+      </div>
     </card>
+    <spacer :size="24" />
   </div>
-  <div>zezez</div>
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
-import AccountUser from '@/views/components/AccountUser.vue'
-import AccountCompany from '@/views/components/AccountCompany.vue'
-import CreateProject from '@/views/components/CreateProject.vue'
-import CollectiveButton from '@/components/CollectiveButton.vue'
 import Card from '@/components/Card.vue'
+import Spacer from '@/components/Spacer.vue'
 export default defineComponent({
-  components: {
-    AccountUser,
-    AccountCompany,
-    CreateProject,
-    CollectiveButton,
-    Card,
-  },
+  name: 'ProjectsList',
+  components: { Card, Spacer },
   setup() {
     const store = useStore()
     const address = computed(() => store.state.account.address)
@@ -45,10 +44,6 @@ export default defineComponent({
     return { account, username, accountCompany, projectsList }
   },
   methods: {
-    goToProjects() {
-      this.$router.push({ name: 'ProjectsList' })
-    },
-
     async updateAccount() {
       const { address, contract } = this
       this.account = await contract.methods.user(address).call()
@@ -84,17 +79,47 @@ export default defineComponent({
     this.projectsList = await contract.methods.getProjects().call()
     console.log(this.projectsList)
   },
-
-  ///COMPANY
 })
 </script>
 <style lang="css" scoped>
-#linkToProjects {
+/*
+.home {
   padding: 24px;
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 500px;
+  max-width: 500px;
   margin: auto;
 }
+.explanations {
+  padding: 12px;
+}
+.button-link {
+  display: inline;
+  appearance: none;
+  border: none;
+  background: none;
+  color: inherit;
+  text-decoration: underline;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.input-username,
+.input-projectname,
+.input-companyname {
+  background: transparent;
+  border: none;
+  padding: 12px;
+  outline: none;
+  width: 100%;
+  color: white;
+  font-family: inherit;
+  font-size: 1.3rem;
+}
+*/
 </style>
