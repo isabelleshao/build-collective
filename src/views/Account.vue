@@ -1,9 +1,16 @@
 <template lang="html">
   <AccountUser @update="account = $event" />
   <AccountCompany @update="accountCompany = $event" />
-  <CreateProject ref="proj" @projectCreated="updateAccount" />
 
-  <div id="linkToProjects">
+  <div class="links">
+    <card title="Create a  project!" subtitle="Hooray" :blue="true">
+      <collective-button :transparent="true" @click="goToCreateProject">
+        Create a project!
+      </collective-button>
+    </card>
+  </div>
+
+  <div class="links">
     <card title="Check every projects!" subtitle="Hooray" :blue="true">
       <collective-button :transparent="true" @click="goToProjects">
         Check every projects!
@@ -11,7 +18,7 @@
     </card>
   </div>
 
-  <div id="linkToProjects">
+  <div class="links">
     <card title="Check every companies!" subtitle="Hooray" :blue="true">
       <collective-button :transparent="true" @click="goToCompanies">
         Check every companies!
@@ -24,14 +31,12 @@ import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import AccountUser from '@/views/components/AccountUser.vue'
 import AccountCompany from '@/views/components/AccountCompany.vue'
-import CreateProject from '@/views/components/CreateProject.vue'
 import CollectiveButton from '@/components/CollectiveButton.vue'
 import Card from '@/components/Card.vue'
 export default defineComponent({
   components: {
     AccountUser,
     AccountCompany,
-    CreateProject,
     CollectiveButton,
     Card,
   },
@@ -71,7 +76,9 @@ export default defineComponent({
       await contract.methods.addBalance(200).send()
       await this.updateAccount()
     },
-
+    goToCreateProject() {
+      this.$router.push({ name: 'CreateProject' })
+    },
     goToProjects() {
       this.$router.push({ name: 'ProjectsList' })
     },
@@ -92,7 +99,7 @@ export default defineComponent({
 })
 </script>
 <style lang="css" scoped>
-#linkToProjects {
+.links {
   padding: 24px;
   display: flex;
   flex-direction: column;

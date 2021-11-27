@@ -40,8 +40,8 @@
               id="user"
               name="createdby"
               value="user"
-              checked
               v-model="picked"
+              required="required"
             />
             <label for="user">user :</label> {{ this.username }}
           </div>
@@ -63,17 +63,17 @@
       </card>
     </form>
   </div>
-
+  <PreviousPage />
   <!--END project-->
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import Card from '@/components/Card.vue'
-
+import PreviousPage from '@/views/components/PreviousPage.vue'
 export default defineComponent({
   name: 'createProject',
-  components: { Card },
+  components: { Card, PreviousPage },
 
   setup() {
     const store = useStore()

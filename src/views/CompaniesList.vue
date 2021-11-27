@@ -12,15 +12,18 @@
     </card>
     <spacer :size="24" />
   </div>
+
+  <PreviousPage />
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import Card from '@/components/Card.vue'
 import Spacer from '@/components/Spacer.vue'
+import PreviousPage from '@/views/components/PreviousPage.vue'
 export default defineComponent({
   name: 'CompaniesList',
-  components: { Card, Spacer },
+  components: { Card, Spacer, PreviousPage },
   setup() {
     const store = useStore()
     const address = computed(() => store.state.account.address)
@@ -62,45 +65,4 @@ export default defineComponent({
   },
 })
 </script>
-<style lang="css" scoped>
-/*
-.home {
-  padding: 24px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 500px;
-  margin: auto;
-}
-.explanations {
-  padding: 12px;
-}
-.button-link {
-  display: inline;
-  appearance: none;
-  border: none;
-  background: none;
-  color: inherit;
-  text-decoration: underline;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-}
-.input-username,
-.input-projectname,
-.input-companyname {
-  background: transparent;
-  border: none;
-  padding: 12px;
-  outline: none;
-  width: 100%;
-  color: white;
-  font-family: inherit;
-  font-size: 1.3rem;
-}
-*/
-</style>
+<style lang="css" scoped></style>
