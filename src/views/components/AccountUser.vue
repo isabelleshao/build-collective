@@ -22,13 +22,15 @@
         :subtitle="`${balance} Ξ\t\t${account.balance} Tokens`"
         :gradient="true"
       >
-        <div class="explanations">
-          {{ account.balance }}
-          {{ account.username }}
-          {{ account.registered }}
-          {{ address }}
-          {{ balance }}
-        </div>
+        <ul>
+          <li><b>name</b>: {{ account.username }}</li>
+          <li><b>Token balance</b>: {{ account.balance }}</li>
+          <li><b>Eth balance</b>: {{ balance }}</li>
+          <li><b>address</b>: {{ address }}</li>
+          <li><b>registered</b>: {{ account.registered }}</li>
+          <li><b>contract address</b>: {{ contract._address }}</li>
+        </ul>
+
         <div class="explanations">
           On your account on the contract, you have
           {{ account.balance }} tokens. If you click

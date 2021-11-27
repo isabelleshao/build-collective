@@ -1,6 +1,6 @@
 <template lang="html">
   <!-- COMPANY-->
-  <div class="home" v-if="!accountCompany">
+  <div class="home" v-if="!companyAccount">
     <form @submit.prevent="signUpCompany">
       <card
         title="Enter your company name here"
@@ -11,38 +11,36 @@
           class="input-companyname"
           v-model="companyName"
           placeholder="Type your company name here"
+          required="required"
         />
-        <!--   <input
-          type="text"
+        <input
+          type="number"
           class="input-companybalance"
           v-model="companyBalance"
           placeholder="Type your company balance here"
-        />-->
+          required="required"
+          min="0"
+        />
+
+        <input type="submit" value="Submit" class="btn" />
       </card>
     </form>
   </div>
-  <div class="home" v-if="accountCompany">
+  <div class="home" v-if="companyAccount">
     <div class="card-home-wrapper">
       <card
-        :title="accountCompany.name"
-        :subtitle="`${balance} Ξ\t\t${accountCompany.balance} Tokens`"
+        :title="`Your company : ${companyAccount.name}`"
+        :subtitle="` Ξ\t\t${companyAccount.balance} Tokens`"
         :gradient="true"
       >
-        <div class="explanations">
-          {{ companyName }}
-          {{ companyBalance }}
-          {{ accountCompany.balance }}
-          {{ accountCompany.name }}
-          {{ address }}
-          {{ balance }}
-        </div>
-        <div class="explanations">
-          On your account on the contract, you have
-          {{ account.balance }} tokens. If you click
-          <button class="button-link" @click="addTokens">here</button>, you can
-          add some token to your account. Just give it a try! And think to put
-          an eye on Ganache!
-        </div>
+        <ul>
+          <li><b>name</b>: {{ companyAccount.name }}</li>
+          <li><b>owner</b>: {{ companyAccount.owner }}</li>
+          <li><b>Token balance</b>: {{ companyAccount.balance }} tokens</li>
+          <li><b>Owner ETH balance</b>: {{ balance }} tokens</li>
+
+          <li><b>contributors</b>:</li>
+        </ul>
       </card>
     </div>
   </div>
@@ -73,23 +71,22 @@ export default defineComponent({
     return { companyOwner, companyName, companyBalance, companyAccount }
   },
   methods: {
-    async updateCompanyAccount() {
+    async updateAccount() {
       const { address, contract } = this
       this.companyAccount = await contract.methods.company(address).call()
     },
-    async signUpCompany() {
-      const { contract, companyName, companyBalance } = this
+    async signUp() {
+      const { contract, companyName } = this
       const name = companyName.trim().replace(/ /g, '_')
-      // const balance = companyBalance.trim().replace(/ /g, '_')
-      await contract.methods.signUpCompany(name, 0).send()
-      await this.updateCompanyAccount()
+      await contract.methods.signUp(name).send()
+      await this.updateAccount()
       this.companyName = ''
     },
 
     async addTokens() {
       const { contract } = this
       await contract.methods.addBalance(200).send()
-      await this.updateCompanyAccount()
+      await this.updateAccount()
     },
   },
   async mounted() {

@@ -14,7 +14,7 @@ contract BuildCollective is Ownable {
   struct Company {
     string name;
     address owner;
-    address[] members;
+    //  address[] members;
     uint256 balance;
   }
 
@@ -110,11 +110,9 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
     public
     returns (Company memory)
   {
-    require(bytes(name).length > 0);
-    require(balance > 0);
-    address[] memory members = new address[](1);
-    members[0] = msg.sender;
-    companies[msg.sender] = Company(name, msg.sender, members, balance);
+    // address[] memory members = new address[](1);
+    // members[0] = msg.sender;
+    companies[msg.sender] = Company(name, msg.sender, balance);
     emit CompanySignedUp(msg.sender, companies[msg.sender]);
   }
 

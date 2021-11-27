@@ -1,5 +1,5 @@
 <template lang="html">
-  <div v-for="projet in projectsList" :key="projet.id">
+  <div v-for="projet in projectsList" :key="projet.name">
     <card :title="projet.name" subtitle="Hooray">
       <div class="explanations">
         <ul>
@@ -37,11 +37,11 @@ export default defineComponent({
   },
   data() {
     const account = null
-    const username = ''
+    //const username = ''
     const accountCompany = null
     const projectsList: any[] = []
 
-    return { account, username, accountCompany, projectsList }
+    return { account, accountCompany, projectsList }
   },
   methods: {
     async updateAccount() {
@@ -49,13 +49,6 @@ export default defineComponent({
       this.account = await contract.methods.user(address).call()
       this.projectsList = await contract.methods.getProjects().call()
       console.log(this.$refs.proj)
-    },
-    async signUp() {
-      const { contract, username } = this
-      const name = username.trim().replace(/ /g, '_')
-      await contract.methods.signUp(name).send()
-      await this.updateAccount()
-      this.username = ''
     },
 
     async addTokens() {
@@ -65,19 +58,13 @@ export default defineComponent({
     },
   },
 
-  async reloadComponent() {
-    const { address, contract } = this
-    this.projectsList = await contract.methods.getProjects().call()
-    console.log(this.$refs.proj)
-  },
-
   //Vue calls the mounted() hook when your component is added to the DOM.
   async mounted() {
     const { address, contract } = this
     const account = await contract.methods.user(address).call()
     if (account.registered) this.account = account
     this.projectsList = await contract.methods.getProjects().call()
-    console.log(this.projectsList)
+    // console.log(this.projectsList)
   },
 })
 </script>

@@ -55,7 +55,7 @@ export default defineComponent({
   },
   data() {
     const account = null
-    const username = ''
+    // const username = ''
     const companyAccount = null
     const project = null
 
@@ -67,9 +67,9 @@ export default defineComponent({
 
     return {
       account,
-      username,
+      // username,
       companyAccount,
-      project,
+      //   project,
       projectsList,
       projectName,
       projectBalance,
@@ -79,19 +79,11 @@ export default defineComponent({
   methods: {
     async updateAccount() {
       const { address, contract } = this
-      this.project = await contract.methods.project(address).call()
-      console.log(this.project)
+      // this.project = await contract.methods.project(address).call()
       this.projectsList = await contract.methods.getProjects().call()
-      console.log(this.projectsList)
-      this.$emit('projectsList', this.projectsList)
+
+      // this.$emit('projectsList', this.projectsList)
       this.$emit('projectCreated')
-    },
-    async signUp() {
-      const { contract, username } = this
-      const name = username.trim().replace(/ /g, '_')
-      await contract.methods.signUp(name).send()
-      await this.updateAccount()
-      this.username = ''
     },
 
     async createProject() {

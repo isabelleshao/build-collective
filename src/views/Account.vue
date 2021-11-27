@@ -1,9 +1,7 @@
 <template lang="html">
-  <!--ACCOUNT-->
-
   <AccountUser />
   <AccountCompany />
-  <CreateProject ref="proj" @projectCreated="updateAccount" />
+  <CreateProject @projectCreated="updateAccount" />
   <div id="linkToProjects">
     <card title="Check every projects!" subtitle="Hooray" :blue="true">
       <collective-button :transparent="true" @click="goToProjects">
@@ -11,7 +9,6 @@
       </collective-button>
     </card>
   </div>
-  <div>zezez</div>
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
@@ -40,20 +37,17 @@ export default defineComponent({
     const account = null
     const username = ''
     const accountCompany = null
-    const projectsList: any[] = []
+    const projectsList = null
 
     return { account, username, accountCompany, projectsList }
   },
   methods: {
-    goToProjects() {
-      this.$router.push({ name: 'ProjectsList' })
-    },
-
     async updateAccount() {
       const { address, contract } = this
       this.account = await contract.methods.user(address).call()
       this.projectsList = await contract.methods.getProjects().call()
-      console.log(this.$refs.proj)
+      this.accountCompany = await contract.methods.company(address).call()
+      console.log(this.projectsList)
     },
     async signUp() {
       const { contract, username } = this
@@ -68,24 +62,18 @@ export default defineComponent({
       await contract.methods.addBalance(200).send()
       await this.updateAccount()
     },
-  },
 
-  async reloadComponent() {
-    const { address, contract } = this
-    this.projectsList = await contract.methods.getProjects().call()
-    console.log(this.$refs.proj)
+    goToProjects() {
+      this.$router.push({ name: 'ProjectsList' })
+    },
   },
 
   //Vue calls the mounted() hook when your component is added to the DOM.
   async mounted() {
     const { address, contract } = this
     const account = await contract.methods.user(address).call()
-    if (account.registered) this.account = account
-    this.projectsList = await contract.methods.getProjects().call()
-    console.log(this.projectsList)
+    if (account.registered) this.updateAccount()
   },
-
-  ///COMPANY
 })
 </script>
 <style lang="css" scoped>
