@@ -1,7 +1,7 @@
 <template lang="html">
   <!-- COMPANY-->
   <div class="home" v-if="!companyAccount">
-    <form @submit.prevent="signUpCompany">
+    <form @submit.prevent="signUp">
       <card
         title="Enter your company name here"
         subtitle="Type directly in the input and hit enter. All spaces will be converted to _"
@@ -54,7 +54,6 @@ import Card from '@/components/Card.vue'
 export default defineComponent({
   name: 'AccountCompany',
   components: { Card },
-
   setup() {
     const store = useStore()
     const address = computed(() => store.state.account.address)
@@ -68,17 +67,25 @@ export default defineComponent({
     const companyName = ''
     const companyBalance = ''
     const companyAccount = null
-    return { companyOwner, companyName, companyBalance, companyAccount }
+    const account = null
+    return {
+      companyOwner,
+      companyName,
+      companyBalance,
+      companyAccount,
+      account,
+    }
   },
   methods: {
     async updateAccount() {
       const { address, contract } = this
       this.companyAccount = await contract.methods.company(address).call()
+      this.$emit('update', this.companyAccount)
     },
     async signUp() {
-      const { contract, companyName } = this
+      const { contract, companyName, companyBalance } = this
       const name = companyName.trim().replace(/ /g, '_')
-      await contract.methods.signUp(name).send()
+      await contract.methods.signUpCompany(name, companyBalance).send()
       await this.updateAccount()
       this.companyName = ''
     },
@@ -91,8 +98,10 @@ export default defineComponent({
   },
   async mounted() {
     const { address, contract } = this
-    const account = await contract.methods.company(address).call()
-    this.companyAccount = account
+    const account = await contract.methods.user(address).call()
+    if (account.registered) this.account = account
+    const companyAccount = await contract.methods.company(address).call()
+    if (companyAccount.name) this.companyAccount = companyAccount
   },
 })
 </script>

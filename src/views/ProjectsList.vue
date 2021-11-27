@@ -5,6 +5,9 @@
         <ul>
           <li><b>name</b>: {{ projet.name }}</li>
           <li><b>owner</b>: {{ projet.owner }}</li>
+          <li>
+            <b>owner status</b>: {{ projet.createdByUser ? 'user' : 'company' }}
+          </li>
           <li><b>balance</b>: {{ projet.balance }}</li>
           <li><b>contributors</b>: {{ projet.contributors }}</li>
           <li><b>Url Git Repo</b>: {{ projet.gitAddress }}</li>
@@ -39,7 +42,7 @@ export default defineComponent({
     const account = null
     //const username = ''
     const accountCompany = null
-    const projectsList: any[] = []
+    const projectsList = null
 
     return { account, accountCompany, projectsList }
   },

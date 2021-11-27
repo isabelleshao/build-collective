@@ -1,57 +1,49 @@
 <template lang="html">
-  <!--ACCOUNT-->
-  <div class="home" v-if="!account">
-    <form @submit.prevent="signUp">
+  <!--project-->
+  <div class="home">
+    <form @submit.prevent="createBounty">
       <card
-        title="Enter your username here"
+        title="Add a project"
         subtitle="Type directly in the input and hit enter. All spaces will be converted to _"
       >
         <input
           type="text"
-          class="input-username"
-          v-model="username"
-          placeholder="Type your username here"
+          class="input-bountyName"
+          v-model="bountyName"
+          placeholder="Type your bounty name here"
+          required="required"
         />
+
+        <input
+          type="text"
+          class="input-bountyDescr"
+          v-model="bountyDescr"
+          placeholder="Type your bounty description here"
+          required="required"
+        />
+
+        <input
+          type="number"
+          class="input-bountyReward"
+          v-model="bountyReward"
+          placeholder="Type your reward here"
+          min="0"
+          required="required"
+        />
+
+        <input type="submit" value="Submit" class="btn" />
       </card>
     </form>
   </div>
-  <div class="home" v-if="account">
-    <div class="card-home-wrapper">
-      <card
-        :title="account.username"
-        :subtitle="`${balance} Ξ\t\t${account.balance} Tokens`"
-        :gradient="true"
-      >
-        <ul>
-          <li><b>name</b>: {{ account.username }}</li>
-          <li><b>Token balance</b>: {{ account.balance }}</li>
-          <li><b>Eth balance</b>: {{ balance }}</li>
-          <li><b>address</b>: {{ address }}</li>
-          <li><b>registered</b>: {{ account.registered }}</li>
-          <li><b>contract address</b>: {{ contract._address }}</li>
-        </ul>
-
-        <div class="explanations">
-          On your account on the contract, you have
-          {{ account.balance }} tokens. If you click
-          <button class="button-link" @click="addTokens">here</button>, you can
-          add some token to your account. Just give it a try! And think to put
-          an eye on Ganache!
-        </div>
-      </card>
-    </div>
-  </div>
-  <!--END ACCOUNT-->
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import Card from '@/components/Card.vue'
-
+import Spacer from '@/components/Spacer.vue'
 export default defineComponent({
-  name: 'AccountUser',
+  name: 'CreateBounty',
   components: { Card },
-
   setup() {
     const store = useStore()
     const address = computed(() => store.state.account.address)
@@ -61,23 +53,41 @@ export default defineComponent({
   },
   data() {
     const account = null
-    const username = ''
     const accountCompany = null
     const projectsList = null
-    return { account, username, accountCompany, projectsList }
+    const bountyName = ''
+    const bountyDesc = ''
+    const bountyReward = ''
+    const closed = null
+
+    return {
+      account,
+      accountCompany,
+      projectsList,
+      bountyName,
+      bountyDesc,
+      bountyReward,
+      closed,
+    }
   },
   methods: {
     async updateAccount() {
       const { address, contract } = this
       this.account = await contract.methods.user(address).call()
-      this.$emit('update', this.account)
+      this.projectsList = await contract.methods.getProjects().call()
+      console.log(this.$refs.proj)
     },
-    async signUp() {
-      const { contract, username } = this
-      const name = username.trim().replace(/ /g, '_')
-      await contract.methods.signUp(name).send()
+
+    async createBounty() {
+      const { contract, bountyName, bountyDesc, bountyReward, closed } = this
+      const name = bountyName.trim().replace(/ /g, '_')
+      await contract.methods
+        .createBounty(bountyName, bountyDesc, bountyReward)
+        .send()
       await this.updateAccount()
-      this.username = ''
+      this.bountyName = ''
+      this.bountyDesc = ''
+      this.bountyReward = ''
     },
 
     async addTokens() {
@@ -86,14 +96,19 @@ export default defineComponent({
       await this.updateAccount()
     },
   },
+
+  //Vue calls the mounted() hook when your component is added to the DOM.
   async mounted() {
     const { address, contract } = this
     const account = await contract.methods.user(address).call()
     if (account.registered) this.account = account
+    this.projectsList = await contract.methods.getProjects().call()
+    // console.log(this.projectsList)
   },
 })
 </script>
 <style lang="css" scoped>
+/*
 .home {
   padding: 24px;
   flex: 1;
@@ -132,4 +147,5 @@ export default defineComponent({
   font-family: inherit;
   font-size: 1.3rem;
 }
+*/
 </style>

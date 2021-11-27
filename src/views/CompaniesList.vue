@@ -1,57 +1,26 @@
 <template lang="html">
-  <!--ACCOUNT-->
-  <div class="home" v-if="!account">
-    <form @submit.prevent="signUp">
-      <card
-        title="Enter your username here"
-        subtitle="Type directly in the input and hit enter. All spaces will be converted to _"
-      >
-        <input
-          type="text"
-          class="input-username"
-          v-model="username"
-          placeholder="Type your username here"
-        />
-      </card>
-    </form>
-  </div>
-  <div class="home" v-if="account">
-    <div class="card-home-wrapper">
-      <card
-        :title="account.username"
-        :subtitle="`${balance} Ξ\t\t${account.balance} Tokens`"
-        :gradient="true"
-      >
+  test
+  <div v-for="company in listOfCompanies" :key="company.name">
+    <card :title="company.name" subtitle="Hooray">
+      <div class="explanations">
         <ul>
-          <li><b>name</b>: {{ account.username }}</li>
-          <li><b>Token balance</b>: {{ account.balance }}</li>
-          <li><b>Eth balance</b>: {{ balance }}</li>
-          <li><b>address</b>: {{ address }}</li>
-          <li><b>registered</b>: {{ account.registered }}</li>
-          <li><b>contract address</b>: {{ contract._address }}</li>
+          <li><b>name</b>: {{ company.name }}</li>
+          <li><b>owner</b>: {{ company.owner }}</li>
+          <li><b>balance</b>: {{ company.balance }}</li>
         </ul>
-
-        <div class="explanations">
-          On your account on the contract, you have
-          {{ account.balance }} tokens. If you click
-          <button class="button-link" @click="addTokens">here</button>, you can
-          add some token to your account. Just give it a try! And think to put
-          an eye on Ganache!
-        </div>
-      </card>
-    </div>
+      </div>
+    </card>
+    <spacer :size="24" />
   </div>
-  <!--END ACCOUNT-->
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import Card from '@/components/Card.vue'
-
+import Spacer from '@/components/Spacer.vue'
 export default defineComponent({
-  name: 'AccountUser',
-  components: { Card },
-
+  name: 'CompaniesList',
+  components: { Card, Spacer },
   setup() {
     const store = useStore()
     const address = computed(() => store.state.account.address)
@@ -61,23 +30,18 @@ export default defineComponent({
   },
   data() {
     const account = null
-    const username = ''
+    //const username = ''
     const accountCompany = null
     const projectsList = null
-    return { account, username, accountCompany, projectsList }
+    const listOfCompanies = null
+    return { account, accountCompany, projectsList, listOfCompanies }
   },
   methods: {
     async updateAccount() {
       const { address, contract } = this
       this.account = await contract.methods.user(address).call()
-      this.$emit('update', this.account)
-    },
-    async signUp() {
-      const { contract, username } = this
-      const name = username.trim().replace(/ /g, '_')
-      await contract.methods.signUp(name).send()
-      await this.updateAccount()
-      this.username = ''
+      this.projectsList = await contract.methods.getProjects().call()
+      console.log(this.$refs.proj)
     },
 
     async addTokens() {
@@ -86,14 +50,20 @@ export default defineComponent({
       await this.updateAccount()
     },
   },
+
+  //Vue calls the mounted() hook when your component is added to the DOM.
   async mounted() {
     const { address, contract } = this
     const account = await contract.methods.user(address).call()
+    this.listOfCompanies = await contract.methods.getCompanies().call()
     if (account.registered) this.account = account
+    this.projectsList = await contract.methods.getProjects().call()
+    // console.log(this.projectsList)
   },
 })
 </script>
 <style lang="css" scoped>
+/*
 .home {
   padding: 24px;
   flex: 1;
@@ -132,4 +102,5 @@ export default defineComponent({
   font-family: inherit;
   font-size: 1.3rem;
 }
+*/
 </style>

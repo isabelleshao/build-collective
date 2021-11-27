@@ -1,11 +1,20 @@
 <template lang="html">
-  <AccountUser />
-  <AccountCompany />
-  <CreateProject @projectCreated="updateAccount" />
+  <AccountUser @update="account = $event" />
+  <AccountCompany @update="accountCompany = $event" />
+  <CreateProject ref="proj" @projectCreated="updateAccount" />
+
   <div id="linkToProjects">
     <card title="Check every projects!" subtitle="Hooray" :blue="true">
       <collective-button :transparent="true" @click="goToProjects">
         Check every projects!
+      </collective-button>
+    </card>
+  </div>
+
+  <div id="linkToProjects">
+    <card title="Check every companies!" subtitle="Hooray" :blue="true">
+      <collective-button :transparent="true" @click="goToCompanies">
+        Check every companies!
       </collective-button>
     </card>
   </div>
@@ -66,13 +75,19 @@ export default defineComponent({
     goToProjects() {
       this.$router.push({ name: 'ProjectsList' })
     },
+
+    goToCompanies() {
+      this.$router.push({ name: 'CompaniesList' })
+    },
   },
 
   //Vue calls the mounted() hook when your component is added to the DOM.
   async mounted() {
     const { address, contract } = this
     const account = await contract.methods.user(address).call()
-    if (account.registered) this.updateAccount()
+    if (account.registered) this.account = account
+    this.projectsList = await contract.methods.getProjects().call()
+    console.log(this.projectsList)
   },
 })
 </script>

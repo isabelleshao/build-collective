@@ -19,6 +19,16 @@ const routes: Array<RouteRecordRaw> = [
     name: 'ProjectsList',
     component: () => import('@/views/ProjectsList.vue'),
   },
+  {
+    path: '/companieslist',
+    name: 'CompaniesList',
+    component: () => import('@/views/CompaniesList.vue'),
+  },
+  {
+    path: '/createbounty',
+    name: 'CreateBounty',
+    component: () => import('@/views/CreateBounty.vue'),
+  },
 ]
 
 const router = createRouter({

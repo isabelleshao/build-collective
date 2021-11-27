@@ -25,6 +25,7 @@ contract BuildCollective is Ownable {
     address[] contributors;
     uint256 balance;
     string gitAddress;
+    bool createdByUser;
     //  address[] bounties;
   }
 
@@ -46,13 +47,11 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
   mapping(address => Project) private projects;
   mapping(address => Bounty) private bounties;
 
-  mapping(address => address) public projectToOwner;
-  mapping(address => address) public bountyToProject;
-
   mapping(address => Project[]) public ownerToProject;
   mapping(address => Bounty[]) public projectToBounty;
 
   Project[] projectsList;
+  Company[] companiesList;
 
   event UserSignedUp(address indexed userAddress, User indexed user);
   event CompanySignedUp(
@@ -92,6 +91,12 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
     return projectsList;
   }
 
+  function getCompanies() public view returns (Company[] memory) {
+    require(users[msg.sender].registered);
+
+    return companiesList;
+  }
+
   ////USERS
   function signUp(string memory username) public returns (User memory) {
     require(bytes(username).length > 0);
@@ -113,6 +118,7 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
     // address[] memory members = new address[](1);
     // members[0] = msg.sender;
     companies[msg.sender] = Company(name, msg.sender, balance);
+    companiesList.push(Company(name, msg.sender, balance));
     emit CompanySignedUp(msg.sender, companies[msg.sender]);
   }
 
@@ -121,7 +127,8 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
   function createProject(
     string memory name,
     uint256 balance,
-    string memory gitUrl
+    string memory gitUrl,
+    bool createdByUser
   ) public returns (Project memory) {
     address[] memory contributors = new address[](1);
     contributors[0] = msg.sender;
@@ -131,32 +138,32 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
       msg.sender,
       contributors,
       balance,
-      gitUrl
+      gitUrl,
+      createdByUser
     );
-    projectsList.push(Project(name, msg.sender, contributors, balance, gitUrl));
+    projectsList.push(
+      Project(name, msg.sender, contributors, balance, gitUrl, createdByUser)
+    );
+
     emit ProjectCreated(msg.sender, projects[msg.sender]);
   }
 
-  /* //BOUNTIES
+  //BOUNTIES
   function createBounty(
     string memory name,
     string memory descr,
     uint256 reward,
-    address project
-  ) public returns (Company memory) {
-    require(bytes(name).length > 0);
-    require(bytes(descr).length > 0);
-    require(reward >= 0);
-
+    address proj
+  ) public returns (Bounty memory) {
     bounties[msg.sender] = Bounty(
       name,
       descr,
       reward,
       address(0),
       msg.sender,
-      project,
+      proj,
       false
     );
     emit BountyCreated(msg.sender, bounties[msg.sender]);
-  }*/
+  }
 }
