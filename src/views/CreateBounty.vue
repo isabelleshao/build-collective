@@ -2,11 +2,11 @@
   <div class="home">
     <form @submit.prevent="createBounty">
       <card
-        title="Add a bounty"
+        title="Create a bounty"
         subtitle="Type directly in the input and hit enter. All spaces will be converted to _"
       >
-        for the project :
-
+        for the project <br />
+        id: {{ $route.params.pid }}, name : {{ $route.params.pname }}
         <input
           type="text"
           class="input-bountyName"
@@ -46,6 +46,7 @@ import PreviousPage from '@/views/components/PreviousPage.vue'
 export default defineComponent({
   name: 'CreateBounty',
   components: { Card, PreviousPage },
+
   setup() {
     const store = useStore()
     const address = computed(() => store.state.account.address)
@@ -56,41 +57,39 @@ export default defineComponent({
   data() {
     const account = null
     const accountCompany = null
-    const projectsList = null
     const bountyName = ''
-    const bountyDesc = ''
+    const bountyDescr = ''
     const bountyReward = ''
-    const closed = null
     const project = null
-    const projectName = ''
+    const bounty = null
 
     return {
       account,
       accountCompany,
-      projectsList,
       bountyName,
-      bountyDesc,
+      bountyDescr,
       bountyReward,
-      closed,
       project,
-      projectName,
+      bounty,
     }
   },
   methods: {
     async updateAccount() {
       const { address, contract } = this
-      this.account = await contract.methods.user(address).call()
-      this.projectsList = await contract.methods.getProjects().call()
-      console.log(this.$refs.proj)
+      this.bounty = await contract.methods.bounty(address).call()
     },
 
     async createBounty() {
-      const { contract, bountyName, bountyDesc, bountyReward } = this
-      const name = bountyName.trim().replace(/ /g, '_')
-      await contract.methods.createBounty(name, bountyDesc, bountyReward).send()
+      const { contract, bountyName, bountyDescr, bountyReward } = this
+
+      const pid = +(this.$route.params.pid as string)
+      console.log('pid' + pid)
+      await contract.methods
+        .createBounty(bountyName, bountyDescr, bountyReward)
+        .send()
       await this.updateAccount()
       this.bountyName = ''
-      this.bountyDesc = ''
+      this.bountyDescr = ''
       this.bountyReward = ''
     },
 
@@ -106,7 +105,13 @@ export default defineComponent({
     const { address, contract } = this
     const account = await contract.methods.user(address).call()
     if (account.registered) this.account = account
-    this.projectsList = await contract.methods.getProjects().call()
+    // this.projectId = +(this.$route.params.pid as string)
+    //this.projectName = this.$route.params.pname as string
+    //console.log(this.projectId)
+    //console.log(this.projectName)
+    this.project = await contract.methods
+      .getProjectById(+(this.$route.params.pid as string))
+      .call()
   },
 })
 </script>

@@ -27,7 +27,6 @@ contract BuildCollective is Ownable {
     uint256 balance;
     string gitAddress;
     bool createdByUser;
-    //  address[] bounties;
   }
 
   /*
@@ -40,7 +39,7 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
     uint256 reward;
     address fixedBy;
     address huntedBy;
-    address project;
+    uint256 projectId;
     bool closed;
   }
 
@@ -50,7 +49,6 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
   mapping(address => Bounty) private bounties;
 
   mapping(address => Project[]) public ownerToProject;
-  mapping(address => Bounty[]) public projectToBounty;
 
   uint256 cptProjectId = 0;
   uint256 cptBountyId = 0;
@@ -58,6 +56,7 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
   Project[] projectsList;
   Company[] companiesList;
   Bounty[] bountiesList;
+  uint256[] public bountyIdToProjectId;
 
   event UserSignedUp(address indexed userAddress, User indexed user);
   event CompanySignedUp(
@@ -183,8 +182,7 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
   function createBounty(
     string memory name,
     string memory descr,
-    uint256 reward,
-    address proj
+    uint256 reward
   ) public returns (Bounty memory) {
     bounties[msg.sender] = Bounty(
       cptBountyId,
@@ -193,22 +191,16 @@ On a project, you should be able to create bounties. Bounties are bugs with a re
       reward,
       address(0),
       msg.sender,
-      proj,
+      1,
       false
     );
 
     bountiesList.push(
-      Bounty(
-        cptBountyId,
-        name,
-        descr,
-        reward,
-        address(0),
-        msg.sender,
-        proj,
-        false
-      )
+      Bounty(cptBountyId, name, descr, reward, address(0), msg.sender, 1, false)
     );
+
+    //  bountyIdToProjectId[cptBountyId] = projectId;
+
     cptBountyId++;
     emit BountyCreated(msg.sender, bounties[msg.sender]);
   }

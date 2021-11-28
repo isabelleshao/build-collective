@@ -1,29 +1,38 @@
 <template lang="html">
   <AccountUser @update="account = $event" />
-  <AccountCompany @update="accountCompany = $event" />
+  <AccountCompany @update="accountCompany = $event" v-if="account" />
+  <div class="tab">
+    <div class="links" v-if="account">
+      <card title="Create a  project!" subtitle="Hooray" :blue="true">
+        <collective-button :transparent="true" @click="goToCreateProject">
+          Create a project!
+        </collective-button>
+      </card>
+    </div>
 
-  <div class="links">
-    <card title="Create a  project!" subtitle="Hooray" :blue="true">
-      <collective-button :transparent="true" @click="goToCreateProject">
-        Create a project!
-      </collective-button>
-    </card>
-  </div>
+    <div class="links" v-if="account">
+      <card title="Check every projects!" subtitle="Hooray" :blue="true">
+        <collective-button :transparent="true" @click="goToProjects">
+          Check every projects!
+        </collective-button>
+      </card>
+    </div>
 
-  <div class="links">
-    <card title="Check every projects!" subtitle="Hooray" :blue="true">
-      <collective-button :transparent="true" @click="goToProjects">
-        Check every projects!
-      </collective-button>
-    </card>
-  </div>
+    <div class="links" v-if="account">
+      <card title="Check every companies!" subtitle="Hooray" :blue="true">
+        <collective-button :transparent="true" @click="goToCompanies">
+          Check every companies!
+        </collective-button>
+      </card>
+    </div>
 
-  <div class="links">
-    <card title="Check every companies!" subtitle="Hooray" :blue="true">
-      <collective-button :transparent="true" @click="goToCompanies">
-        Check every companies!
-      </collective-button>
-    </card>
+    <div class="links" v-if="account">
+      <card title="Fix!" subtitle="Hooray" :blue="true">
+        <collective-button :transparent="true" @click="goToBounties">
+          Check every bounties!
+        </collective-button>
+      </card>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -85,6 +94,10 @@ export default defineComponent({
 
     goToCompanies() {
       this.$router.push({ name: 'CompaniesList' })
+    },
+
+    goToBounties() {
+      this.$router.push({ name: 'BountiesList' })
     },
   },
 

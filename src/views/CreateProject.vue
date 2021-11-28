@@ -31,7 +31,7 @@
           required="required"
         />
 
-        <div class="explanations">
+        <div class="explanations" v-if="this.companyname.length > 0">
           Created by :
 
           <div>
@@ -57,8 +57,6 @@
             <label for="company"> company : {{ this.companyname }} </label>
           </div>
         </div>
-
-        <div>Choisi : {{ picked }}</div>
         <input type="submit" value="Submit" class="btn" />
       </card>
     </form>

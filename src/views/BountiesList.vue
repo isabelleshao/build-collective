@@ -1,6 +1,6 @@
 <template lang="html">
-  <div v-for="projet in projectsList" :key="projet.name">
-    <Project :projet="projet" />
+  <div v-for="b in bountiesList" :key="b.name">
+    <Bounty :b="b" />
     <spacer :size="24" />
   </div>
   <PreviousPage />
@@ -10,10 +10,10 @@ import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import Spacer from '@/components/Spacer.vue'
 import PreviousPage from '@/views/components/PreviousPage.vue'
-import Project from '@/views/components/Project.vue'
+import Bounty from '@/views/components/Bounty.vue'
 export default defineComponent({
-  name: 'ProjectsList',
-  components: { Spacer, PreviousPage, Project },
+  name: 'BountiesList',
+  components: { Spacer, PreviousPage, Bounty },
   setup() {
     const store = useStore()
     const address = computed(() => store.state.account.address)

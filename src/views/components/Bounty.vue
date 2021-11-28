@@ -2,24 +2,26 @@
   <card :title="projectName" subtitle="Hooray">
     <div class="explanations">
       <ul>
-        <li><b>id</b>: {{ projectId }}</li>
-        <li><b>name</b>: {{ projectName }}</li>
-        <li><b>owner</b>: {{ projectOwner }}</li>
-        <li><b>owner status</b>: {{ createdByUser ? 'user' : 'company' }}</li>
-        <li><b>contributors</b>: {{ projectContributor }}</li>
-        <li><b>balance</b>: {{ projectBalance }}</li>
-        <li><b>Url Git Repo</b>: {{ projectGitAddress }}</li>
-        <li><b>Bounties</b>: {{ projectGitAddress }}</li>
-        <!-- named route -->
-        <router-link
-          class="linkBounty"
-          :to="{
-            name: 'CreateBounty',
-            params: { pid: projectId, pname: projectName },
-          }"
-        >
-          >> Create Bounty!</router-link
-        >
+        <li><b>id </b>: {{ this.b.id }}</li>
+        <li><b>name</b>: {{ this.b.name }}</li>
+        <li><b>Bounty status</b>: {{ this.b.closed ? 'close' : 'open' }}</li>
+        <li><b>reward</b>: {{ this.b.reward }}</li>
+        <li><b>description</b>: {{ this.b.descr }}</li>
+        <li><b>Created by</b>: {{ this.b.huntedBy }}</li>
+        <li>for the project :{{ this.project }}</li>
+
+        <div v-if="this.b.closed == false">
+          <br />
+          <router-link
+            class="linkBounty"
+            :to="{
+              name: 'CreateBounty',
+              params: { pid: projectId, pname: projectName },
+            }"
+          >
+            >> Fix the issue!</router-link
+          >
+        </div>
       </ul>
     </div>
   </card>
@@ -29,9 +31,9 @@ import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import Card from '@/components/Card.vue'
 export default defineComponent({
-  name: 'Project',
+  name: 'Bounty',
   components: { Card },
-  props: ['projet'],
+  props: ['b'],
   setup() {
     const store = useStore()
     const address = computed(() => store.state.account.address)
@@ -42,28 +44,14 @@ export default defineComponent({
   data() {
     const account = null
     const accountCompany = null
-    const projectsList = null
     const project = null
-    const projectName = ''
-    const projectOwner = null
-    const createdByUser = null
-    const projectContributor = null
-    const projectBalance = 0
-    const projectGitAddress = ''
-    const projectId = ''
+    const bounty = null
 
     return {
       account,
       accountCompany,
-      projectsList,
       project,
-      projectName,
-      projectOwner,
-      createdByUser,
-      projectBalance,
-      projectContributor,
-      projectGitAddress,
-      projectId,
+      bounty,
     }
   },
   methods: {
@@ -74,13 +62,13 @@ export default defineComponent({
     async updateAccount() {
       const { address, contract } = this
       this.account = await contract.methods.user(address).call()
-      this.projectsList = await contract.methods.getProjects().call()
+
       console.log(this.$refs.proj)
     },
     goToCreateCreateBounty() {
       this.$router.push({
         name: 'CreateBounty',
-        params: { pid: this.projectId },
+        params: { bid: this.b.id },
       })
     },
     async addTokens() {
@@ -95,16 +83,14 @@ export default defineComponent({
     const { address, contract } = this
     const account = await contract.methods.user(address).call()
     if (account.registered) this.account = account
-    this.projectsList = await contract.methods.getProjects().call()
-    this.project = this.projet
-    this.projectId = this.projet[0]
-    this.projectName = this.projet[1]
-    this.projectOwner = this.projet[2]
-
-    this.projectContributor = this.projet[3]
-    this.projectBalance = this.projet[4]
-    this.projectGitAddress = this.projet[5]
-    this.createdByUser = this.projet[6]
+    const companyAccount = await contract.methods.company(address).call()
+    if (companyAccount.name) this.accountCompany = companyAccount
+    this.bounty = this.b
+    console.log(this.bounty)
+    this.project = await contract.methods
+      .getProjectById(this.b.projectId)
+      .call()
+    console.log(this.project)
   },
 })
 </script>

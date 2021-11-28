@@ -6,6 +6,10 @@
         title="Enter your username here"
         subtitle="Type directly in the input and hit enter. All spaces will be converted to _"
       >
+        <div class="explanations">
+          Une fois connecté, vous aurez accès à tout le site (création
+          entreprise, projet, liste des projets...)
+        </div>
         <input
           type="text"
           class="input-username"
