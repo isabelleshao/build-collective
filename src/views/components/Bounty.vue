@@ -10,6 +10,7 @@
         <li><b>reward</b>: {{ this.b.reward }}</li>
         <li><b>description</b>: {{ this.b.descr }}</li>
         <li><b>Created by</b>: {{ this.b.huntedBy }}</li>
+        <li><b>Closed by</b>: {{ this.b.fixedBy }}</li>
         <li>for the project :{{ this.project }}</li>
 
         <div v-if="this.b.closed == false">

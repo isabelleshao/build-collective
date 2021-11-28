@@ -246,6 +246,7 @@ contract BuildCollective is Ownable {
   function hunting(uint256 index) public returns (Bounty memory) {
     require(users[msg.sender].registered);
     bountiesList[index].closed = 1;
+    bountiesList[index].fixedBy = msg.sender;
     users[msg.sender].balance =
       users[msg.sender].balance +
       bountiesList[index].reward;
