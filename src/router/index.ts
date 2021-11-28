@@ -39,6 +39,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'CreateBounty',
     component: () => import('@/views/CreateBounty.vue'),
   },
+
+  {
+    path: '/bountyHunting',
+    name: 'BountyHunting',
+    component: () => import('@/views/BountyHunting.vue'),
+  },
 ]
 
 const router = createRouter({

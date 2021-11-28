@@ -1,65 +1,38 @@
 <template lang="html">
-  <!-- COMPANY-->
-  <div class="home" v-if="!companyAccount">
-    <form @submit.prevent="signUp">
+  <div class="home">
+    <form @submit.prevent="bountyHunting">
       <card
-        title="Enter your company name here"
-        subtitle="Type directly in the input and hit enter. All spaces will be converted to _"
+        title="Please fill the fields"
+        subtitle="Type directly in the input and hit enter."
       >
         <div class="explanations">
-          Attention : le nombre de token donné sera déduit de votre compte.
-          Merci de bien verifier le solde de votre compte, sinon une exception
-          se declenchera. (pour rappel, vous avez {{ accountBalance }} tokens)
+          You will hunt the bounty {{ this.$route.params.name }} ( id :
+          {{ this.$route.params.bid }}) with the reward :
+          {{ this.$route.params.reward }}
         </div>
-
         <input
           type="text"
-          class="input-companyname"
-          v-model="companyName"
-          placeholder="Type your company name here"
+          class="input-gitUrl"
+          v-model="gitUrl"
+          placeholder="Type the git url"
           required="required"
-        />
-        <input
-          type="number"
-          class="input-companybalance"
-          v-model="companyBalance"
-          placeholder="Type your company balance here"
-          required="required"
-          min="0"
         />
 
         <input type="submit" value="Submit" class="btn" />
       </card>
     </form>
   </div>
-  <div class="home" v-if="companyAccount">
-    <div class="card-home-wrapper">
-      <card
-        :title="`Your company : ${companyAccount.name}`"
-        :subtitle="` Ξ\t\t${companyAccount.balance} Tokens`"
-        :gradient="true"
-      >
-        <ul>
-          <li><b>name</b>: {{ companyAccount.name }}</li>
-          <li><b>owner</b>: {{ companyAccount.owner }}</li>
-          <li><b>Token balance</b>: {{ companyAccount.balance }} tokens</li>
-          <li><b>Owner ETH balance</b>: {{ balance }} tokens</li>
 
-          <li><b>contributors</b>:</li>
-        </ul>
-      </card>
-    </div>
-  </div>
-  <!-- END COMPANY-->
+  <PreviousPage />
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import Card from '@/components/Card.vue'
-
+import PreviousPage from '@/views/components/PreviousPage.vue'
 export default defineComponent({
-  name: 'AccountCompany',
-  components: { Card },
+  name: 'BountyHunting',
+  components: { Card, PreviousPage },
   setup() {
     const store = useStore()
     const address = computed(() => store.state.account.address)
@@ -69,33 +42,28 @@ export default defineComponent({
   },
 
   data() {
-    const companyOwner = null
-    const companyName = ''
-    const companyBalance = ''
     const companyAccount = null
     const account = null
-    const accountBalance = 0
+    const gitUrl = ''
+    const bounty = null
+    const bountyId = -1
     return {
-      companyOwner,
-      companyName,
-      companyBalance,
       companyAccount,
       account,
-      accountBalance,
+      gitUrl,
+      bounty,
+      bountyId,
     }
   },
   methods: {
     async updateAccount() {
       const { address, contract } = this
       this.companyAccount = await contract.methods.company(address).call()
-      this.$emit('update', this.companyAccount)
     },
-    async signUp() {
-      const { contract, companyName, companyBalance } = this
-      const name = companyName.trim().replace(/ /g, '_')
-      await contract.methods.signUpCompany(name, companyBalance).send()
-      await this.updateAccount()
-      this.companyName = ''
+    async bountyHunting() {
+      const { contract } = this
+      this.gitUrl = ''
+      let dd = await contract.methods.hunting(+this.bountyId).send()
     },
 
     async addTokens() {
@@ -110,7 +78,11 @@ export default defineComponent({
     if (account.registered) this.account = account
     const companyAccount = await contract.methods.company(address).call()
     if (companyAccount.name) this.companyAccount = companyAccount
-    this.accountBalance = account.balance
+    this.bountyId = +(this.$route.params.bid as string)
+
+    this.bounty = await contract.methods.getBountyById(this.bountyId).call()
+
+    console.log(this.bountyId)
   },
 })
 </script>
@@ -125,10 +97,7 @@ export default defineComponent({
   margin: auto;
 }
 .explanations {
-  padding: 5px;
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: rgb(240, 240, 240);
+  padding: 12px;
 }
 .button-link {
   display: inline;
@@ -145,8 +114,7 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.input-companybalance,
-.input-companyname {
+.input-gitUrl {
   background: transparent;
   border: none;
   padding: 12px;
@@ -163,5 +131,12 @@ export default defineComponent({
   background: rgb(89, 25, 138);
   color: white;
   font-size: 1.3rem;
+}
+
+.explanations {
+  padding: 5px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: rgb(240, 240, 240);
 }
 </style>

@@ -4,7 +4,9 @@
       <ul>
         <li><b>id </b>: {{ this.b.id }}</li>
         <li><b>name</b>: {{ this.b.name }}</li>
-        <li><b>Bounty status</b>: {{ this.b.closed ? 'close' : 'open' }}</li>
+        <li>
+          <b>Bounty status</b>: {{ this.b.closed == 1 ? 'close' : 'open' }}
+        </li>
         <li><b>reward</b>: {{ this.b.reward }}</li>
         <li><b>description</b>: {{ this.b.descr }}</li>
         <li><b>Created by</b>: {{ this.b.huntedBy }}</li>
@@ -15,11 +17,15 @@
           <router-link
             class="linkBounty"
             :to="{
-              name: 'CreateBounty',
-              params: { pid: projectId, pname: projectName },
+              name: 'BountyHunting',
+              params: {
+                bid: this.b.id,
+                reward: this.b.reward,
+                name: this.b.name,
+              },
             }"
           >
-            >> Fix the issue!</router-link
+            >> Bounty Hunting!</router-link
           >
         </div>
       </ul>
@@ -55,26 +61,9 @@ export default defineComponent({
     }
   },
   methods: {
-    goToIndex() {
-      this.$router.push({ name: 'Account' })
-    },
-
     async updateAccount() {
       const { address, contract } = this
       this.account = await contract.methods.user(address).call()
-
-      console.log(this.$refs.proj)
-    },
-    goToCreateCreateBounty() {
-      this.$router.push({
-        name: 'CreateBounty',
-        params: { bid: this.b.id },
-      })
-    },
-    async addTokens() {
-      const { contract } = this
-      await contract.methods.addBalance(200).send()
-      await this.updateAccount()
     },
   },
 
@@ -86,11 +75,9 @@ export default defineComponent({
     const companyAccount = await contract.methods.company(address).call()
     if (companyAccount.name) this.accountCompany = companyAccount
     this.bounty = this.b
-    console.log(this.bounty)
     this.project = await contract.methods
       .getProjectById(this.b.projectId)
       .call()
-    console.log(this.project)
   },
 })
 </script>

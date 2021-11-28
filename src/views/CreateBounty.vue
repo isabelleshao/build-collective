@@ -5,8 +5,12 @@
         title="Create a bounty"
         subtitle="Type directly in the input and hit enter. All spaces will be converted to _"
       >
-        for the project <br />
-        id: {{ $route.params.pid }}, name : {{ $route.params.pname }}
+        <div class="explanations">
+          for the project id: {{ $route.params.pid }}, name :
+          {{ $route.params.pname }}<br />
+          Attention : le reward donné sera déduit de votre compte. Merci de bien
+          verifier le solde de votre compte, sinon une exception se declenchera
+        </div>
         <input
           type="text"
           class="input-bountyName"
@@ -83,20 +87,13 @@ export default defineComponent({
       const { contract, bountyName, bountyDescr, bountyReward } = this
 
       const pid = +(this.$route.params.pid as string)
-      console.log('pid' + pid)
       await contract.methods
-        .createBounty(bountyName, bountyDescr, bountyReward)
+        .createBounty(bountyName, bountyDescr, bountyReward, pid)
         .send()
       await this.updateAccount()
       this.bountyName = ''
       this.bountyDescr = ''
       this.bountyReward = ''
-    },
-
-    async addTokens() {
-      const { contract } = this
-      await contract.methods.addBalance(200).send()
-      await this.updateAccount()
     },
   },
 
@@ -105,13 +102,11 @@ export default defineComponent({
     const { address, contract } = this
     const account = await contract.methods.user(address).call()
     if (account.registered) this.account = account
-    // this.projectId = +(this.$route.params.pid as string)
-    //this.projectName = this.$route.params.pname as string
-    //console.log(this.projectId)
-    //console.log(this.projectName)
     this.project = await contract.methods
       .getProjectById(+(this.$route.params.pid as string))
       .call()
+
+    console.log(this.project)
   },
 })
 </script>
@@ -145,5 +140,12 @@ export default defineComponent({
   background: rgb(89, 25, 138);
   color: white;
   font-size: 1.3rem;
+}
+
+.explanations {
+  padding: 5px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: rgb(240, 240, 240);
 }
 </style>
