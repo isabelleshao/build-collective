@@ -23,7 +23,7 @@
     <div class="card-home-wrapper">
       <card
         :title="account.username"
-        :subtitle="`${balance} Ξ\t\t${account.balance} Tokens`"
+        :subtitle="`${balance} Ξ\t\t${this.account.balance} Tokens`"
         :gradient="true"
       >
         <ul>
@@ -36,7 +36,7 @@
         </ul>
 
         <div class="explanations">
-          On your account on the contract, you have
+          Sur votre compte utilisateur, vous avez
           {{ account.balance }} tokens.<br />
           Add 200 token :
           <button class="button-link" @click="addTokens">click here</button>
@@ -67,7 +67,8 @@ export default defineComponent({
     const username = ''
     const accountCompany = null
     const projectsList = null
-    return { account, username, accountCompany, projectsList }
+    const accountBalance = 0
+    return { account, username, accountCompany, projectsList, accountBalance }
   },
   methods: {
     async updateAccount() {
@@ -92,7 +93,10 @@ export default defineComponent({
   async mounted() {
     const { address, contract } = this
     const account = await contract.methods.user(address).call()
-    if (account.registered) this.account = account
+    if (account.registered) {
+      this.account = account
+      this.accountBalance = account.balance
+    }
   },
 })
 </script>

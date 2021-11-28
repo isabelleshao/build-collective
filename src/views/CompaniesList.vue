@@ -6,6 +6,7 @@
           <li><b>name</b>: {{ company.name }}</li>
           <li><b>owner</b>: {{ company.owner }}</li>
           <li><b>balance</b>: {{ company.balance }}</li>
+          <li><b>Members</b>: {{ company.members }}</li>
         </ul>
       </div>
     </card>

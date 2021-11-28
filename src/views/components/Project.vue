@@ -9,8 +9,6 @@
         <li><b>contributors</b>: {{ projectContributor }}</li>
         <li><b>balance</b>: {{ projectBalance }}</li>
         <li><b>Url Git Repo</b>: {{ projectGitAddress }}</li>
-        <li><b>Bounties</b>: {{ projectGitAddress }}</li>
-        <!-- named route -->
         <router-link
           class="links"
           :to="{
@@ -18,13 +16,16 @@
             params: { pid: projectId, pname: projectName },
           }"
         >
-          >> Create Bounty! (Pour creer un bounty, assurez vous d'avoir un
-          nombre suffisant de token)</router-link
-        >
+          >> Créer Bounty!
+        </router-link>
 
         <div class="links" v-on:click="addContributor($event)">
-          >> Add me as contributor (Pour se mettre en contributeur, assurez vous
-          de ne pas y être deja)
+          >> Ajoutez moi en tant que contributeur
+        </div>
+        <div>
+          Pour créer un bounty, assurez vous d'avoir un nombre suffisant de
+          token<br />Pour se mettre en contributeur, assurez vous de ne pas y
+          être deja)
         </div>
       </ul>
     </div>
@@ -48,7 +49,6 @@ export default defineComponent({
   data() {
     const account = null
     const accountCompany = null
-    const projectsList = null
     const project = null
     const projectName = ''
     const projectOwner = null
@@ -61,7 +61,6 @@ export default defineComponent({
     return {
       account,
       accountCompany,
-      projectsList,
       project,
       projectName,
       projectOwner,
@@ -80,8 +79,11 @@ export default defineComponent({
     async updateAccount() {
       const { address, contract } = this
       this.account = await contract.methods.user(address).call()
-      this.projectsList = await contract.methods.getProjects().call()
-      console.log(this.$refs.proj)
+      const proj = await contract.methods.getProjectById(this.projectId).call()
+      if (proj != null) {
+        this.project = proj
+        this.projectContributor = proj.contributors
+      }
     },
     goToCreateCreateBounty() {
       this.$router.push({
@@ -93,6 +95,7 @@ export default defineComponent({
     async addContributor() {
       const { contract } = this
       await contract.methods.addContributorToProject(this.projectId).send()
+      this.updateAccount()
     },
   },
 
@@ -101,12 +104,10 @@ export default defineComponent({
     const { address, contract } = this
     const account = await contract.methods.user(address).call()
     if (account.registered) this.account = account
-    this.projectsList = await contract.methods.getProjects().call()
     this.project = this.projet
     this.projectId = this.projet[0]
     this.projectName = this.projet[1]
     this.projectOwner = this.projet[2]
-
     this.projectContributor = this.projet[3]
     this.projectBalance = this.projet[4]
     this.projectGitAddress = this.projet[5]

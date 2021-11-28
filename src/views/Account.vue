@@ -11,7 +11,7 @@
     </div>
 
     <div class="links" v-if="account">
-      <card title="Check every projects!" subtitle="Hooray" :blue="true">
+      <card title="Regarder tous les projects!" subtitle="Hooray" :blue="true">
         <collective-button :transparent="true" @click="goToProjects">
           Check every projects!
         </collective-button>
@@ -19,7 +19,11 @@
     </div>
 
     <div class="links" v-if="account">
-      <card title="Check every companies!" subtitle="Hooray" :blue="true">
+      <card
+        title="Regarder toutes les companies!"
+        subtitle="Hooray"
+        :blue="true"
+      >
         <collective-button :transparent="true" @click="goToCompanies">
           Check every companies!
         </collective-button>
@@ -27,7 +31,7 @@
     </div>
 
     <div class="links" v-if="account">
-      <card title="Fix!" subtitle="Hooray" :blue="true">
+      <card title="Regarder toutes les chasses!" subtitle="Hooray" :blue="true">
         <collective-button :transparent="true" @click="goToBounties">
           Check every bounties!
         </collective-button>

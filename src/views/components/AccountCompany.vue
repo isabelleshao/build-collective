@@ -9,7 +9,7 @@
         <div class="explanations">
           Attention : le nombre de token donné sera déduit de votre compte.
           Merci de bien verifier le solde de votre compte, sinon une exception
-          se declenchera. (pour rappel, vous avez {{ accountBalance }} tokens)
+          se declenchera.
         </div>
 
         <input
@@ -45,7 +45,7 @@
           <li><b>Token balance</b>: {{ companyAccount.balance }} tokens</li>
           <li><b>Owner ETH balance</b>: {{ balance }} tokens</li>
 
-          <li><b>contributors</b>:</li>
+          <li><b>Members</b>: {{ companyAccount.members }}</li>
         </ul>
       </card>
     </div>
