@@ -5,7 +5,8 @@ import "./Ownable.sol";
 import "./SafeMath.sol";
 contract BuildCollective is Ownable {
 
-    using SafeMath for uint256;
+    using SafeMath
+    for uint256;
 
     struct User {
         string username;
@@ -67,17 +68,29 @@ contract BuildCollective is Ownable {
     event BountyCreated(address indexed bountyAddress, Bounty indexed bounty);
 
 
-  modifier balancePositif(uint _reward, bool _createdbyUser) {
+    modifier balancePositif(uint _reward, bool _createdbyUser) {
 
-    if (_createdbyUser){
-      require(  users[msg.sender].balance.sub(_reward) >=0);
-    }else{
-      require(  companies[msg.sender].balance.sub(_reward) >=0);
+        if (_createdbyUser) {
+            require(users[msg.sender].balance.sub(_reward) >= 0);
+        } else {
+            require(companies[msg.sender].balance.sub(_reward) >= 0);
+        }
+        _;
     }
 
-    _;
-  }
+    modifier isContributor(uint _pid) {
+      bool exists = false;
+      Project memory _p = projectsList[_pid];
 
+      for (uint i=0; i<_p.contributors.length; i++) {
+        if(_p.contributors[i] == msg.sender){
+         exists = true;
+        }
+      }
+      require(exists==false);
+  
+      _;
+    }
 
 
     function user(address userAddress) public view returns(User memory) {
@@ -149,7 +162,7 @@ contract BuildCollective is Ownable {
         // members[0] = msg.sender;
         companies[msg.sender] = Company(name, msg.sender, balance);
         companiesList.push(Company(name, msg.sender, balance));
-          users[msg.sender].balance =  users[msg.sender].balance - balance;
+        users[msg.sender].balance = users[msg.sender].balance - balance;
         emit CompanySignedUp(msg.sender, companies[msg.sender]);
     }
 
@@ -186,13 +199,19 @@ contract BuildCollective is Ownable {
         );
         cptProjectId++;
 
-        if(createdByUser){
-    users[msg.sender].balance =  users[msg.sender].balance - balance;
-        }else{
-              companies[msg.sender].balance =  companies[msg.sender].balance - balance;
+        if (createdByUser) {
+            users[msg.sender].balance = users[msg.sender].balance - balance;
+        } else {
+            companies[msg.sender].balance = companies[msg.sender].balance - balance;
         }
-      
+
         emit ProjectCreated(msg.sender, projects[msg.sender]);
+    }
+
+
+    function addContributorToProject(uint idProject) public isContributor(idProject) returns(bool) {
+        projectsList[idProject].contributors.push(msg.sender);
+        return true;
     }
 
     //BOUNTIES
@@ -215,14 +234,15 @@ contract BuildCollective is Ownable {
             Bounty(cptBountyId, name, descr, reward, address(0), msg.sender, idProj, 0)
         );
         cptBountyId++;
-        users[msg.sender].balance =  users[msg.sender].balance - reward;
+        users[msg.sender].balance = users[msg.sender].balance - reward;
 
         emit BountyCreated(msg.sender, bounties[msg.sender]);
     }
-      function hunting(uint256 index) public returns(Bounty memory) {
+
+    function hunting(uint256 index) public returns(Bounty memory) {
         require(users[msg.sender].registered);
         bountiesList[index].closed = 1;
-        users[msg.sender].balance = users[msg.sender].balance  + bountiesList[index].reward;
+        users[msg.sender].balance = users[msg.sender].balance + bountiesList[index].reward;
 
         return bountiesList[index];
     }

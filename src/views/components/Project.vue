@@ -12,14 +12,20 @@
         <li><b>Bounties</b>: {{ projectGitAddress }}</li>
         <!-- named route -->
         <router-link
-          class="linkBounty"
+          class="links"
           :to="{
             name: 'CreateBounty',
             params: { pid: projectId, pname: projectName },
           }"
         >
-          >> Create Bounty!</router-link
+          >> Create Bounty! (Pour creer un bounty, assurez vous d'avoir un
+          nombre suffisant de token)</router-link
         >
+
+        <div class="links" v-on:click="addContributor($event)">
+          >> Add me as contributor (Pour se mettre en contributeur, assurez vous
+          de ne pas y être deja)
+        </div>
       </ul>
     </div>
   </card>
@@ -83,10 +89,10 @@ export default defineComponent({
         params: { pid: this.projectId },
       })
     },
-    async addTokens() {
+
+    async addContributor() {
       const { contract } = this
-      await contract.methods.addBalance(200).send()
-      await this.updateAccount()
+      await contract.methods.addContributorToProject(this.projectId).send()
     },
   },
 
@@ -110,16 +116,9 @@ export default defineComponent({
 </script>
 <style lang="css" scoped>
 .links {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 500px;
-  margin: auto;
-}
-
-.linkBounty {
-  color: white;
-  padding: 10 px;
+  color: yellowgreen;
+  text-transform: uppercase;
+  font-weight: 300;
+  text-decoration: underline;
 }
 </style>

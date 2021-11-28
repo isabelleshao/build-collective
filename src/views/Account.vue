@@ -60,17 +60,14 @@ export default defineComponent({
     const account = null
     const username = ''
     const accountCompany = null
-    const projectsList = null
 
-    return { account, username, accountCompany, projectsList }
+    return { account, username, accountCompany }
   },
   methods: {
     async updateAccount() {
       const { address, contract } = this
       this.account = await contract.methods.user(address).call()
-      this.projectsList = await contract.methods.getProjects().call()
       this.accountCompany = await contract.methods.company(address).call()
-      console.log(this.projectsList)
     },
     async signUp() {
       const { contract, username } = this
@@ -106,8 +103,6 @@ export default defineComponent({
     const { address, contract } = this
     const account = await contract.methods.user(address).call()
     if (account.registered) this.account = account
-    this.projectsList = await contract.methods.getProjects().call()
-    console.log(this.projectsList)
   },
 })
 </script>

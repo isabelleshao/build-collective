@@ -24,16 +24,14 @@ export default defineComponent({
   data() {
     const account = null
     const accountCompany = null
-    const projectsList = null
     const bountiesList = null
 
-    return { account, accountCompany, projectsList, bountiesList }
+    return { account, accountCompany, bountiesList }
   },
   methods: {
     async updateAccount() {
       const { address, contract } = this
       this.account = await contract.methods.user(address).call()
-      this.projectsList = await contract.methods.getProjects().call()
     },
 
     async addTokens() {
@@ -48,7 +46,6 @@ export default defineComponent({
     const { address, contract } = this
     const account = await contract.methods.user(address).call()
     if (account.registered) this.account = account
-    this.projectsList = await contract.methods.getProjects().call()
     this.bountiesList = await contract.methods.getBounties().call()
   },
 })

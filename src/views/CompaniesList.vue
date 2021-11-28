@@ -1,5 +1,4 @@
 <template lang="html">
-  test
   <div v-for="company in listOfCompanies" :key="company.name">
     <card :title="company.name" subtitle="Hooray">
       <div class="explanations">
@@ -33,24 +32,14 @@ export default defineComponent({
   },
   data() {
     const account = null
-    //const username = ''
     const accountCompany = null
-    const projectsList = null
     const listOfCompanies = null
-    return { account, accountCompany, projectsList, listOfCompanies }
+    return { account, accountCompany, listOfCompanies }
   },
   methods: {
     async updateAccount() {
       const { address, contract } = this
       this.account = await contract.methods.user(address).call()
-      this.projectsList = await contract.methods.getProjects().call()
-      console.log(this.$refs.proj)
-    },
-
-    async addTokens() {
-      const { contract } = this
-      await contract.methods.addBalance(200).send()
-      await this.updateAccount()
     },
   },
 
@@ -60,8 +49,6 @@ export default defineComponent({
     const account = await contract.methods.user(address).call()
     this.listOfCompanies = await contract.methods.getCompanies().call()
     if (account.registered) this.account = account
-    this.projectsList = await contract.methods.getProjects().call()
-    // console.log(this.projectsList)
   },
 })
 </script>

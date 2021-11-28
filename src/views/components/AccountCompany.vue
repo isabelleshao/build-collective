@@ -69,14 +69,12 @@ export default defineComponent({
   },
 
   data() {
-    const companyOwner = null
     const companyName = ''
     const companyBalance = ''
     const companyAccount = null
     const account = null
     const accountBalance = 0
     return {
-      companyOwner,
       companyName,
       companyBalance,
       companyAccount,
@@ -96,12 +94,6 @@ export default defineComponent({
       await contract.methods.signUpCompany(name, companyBalance).send()
       await this.updateAccount()
       this.companyName = ''
-    },
-
-    async addTokens() {
-      const { contract } = this
-      await contract.methods.addBalance(200).send()
-      await this.updateAccount()
     },
   },
   async mounted() {

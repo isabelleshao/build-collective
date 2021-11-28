@@ -6,6 +6,15 @@
         title="Add a project"
         subtitle="Type directly in the input and hit enter. All spaces will be converted to _"
       >
+        <div class="explanations">
+          Attention : le nombre de token donné sera déduit de votre compte.
+          Merci de bien verifier le solde de votre compte, sinon une exception
+          se declenchera. (pour rappel, vous avez sur votre compte utilisateur
+          {{ accountBalance }} tokens
+          <span v-if="this.companyname.length > 0">
+            et sur votre compte société {{ companyAccountBalance }} tokens</span
+          >).
+        </div>
         <input
           type="text"
           class="input-projectname"
@@ -40,7 +49,7 @@
               id="user"
               name="createdby"
               value="user"
-              v-model="picked"
+              v-model="createdByUserOrCompany"
               required="required"
             />
             <label for="user">user :</label> {{ this.username }}
@@ -52,7 +61,7 @@
               id="company"
               name="createdby"
               value="company"
-              v-model="picked"
+              v-model="createdByUserOrCompany"
             />
             <label for="company"> company : {{ this.companyname }} </label>
           </div>
@@ -88,30 +97,27 @@ export default defineComponent({
     const projectName = ''
     const projectBalance = null
     const projectRepo = ''
-    const picked = null
-    const projectsList = null
+    const createdByUserOrCompany = null
+    const accountBalance = 0
+    const companyAccountBalance = 0
 
     return {
       account,
       username,
       companyname,
       companyAccount,
-
-      projectsList,
       projectName,
       projectBalance,
       projectRepo,
-      picked,
+      createdByUserOrCompany,
+
+      accountBalance,
+      companyAccountBalance,
     }
   },
   methods: {
     async updateAccount() {
       const { contract } = this
-      // this.project = await contract.methods.project(address).call()
-      this.projectsList = await contract.methods.getProjects().call()
-
-      // this.$emit('projectsList', this.projectsList)
-      this.$emit('projectCreated')
     },
 
     async createProject() {
@@ -121,7 +127,7 @@ export default defineComponent({
         projectName,
         projectBalance,
         projectRepo,
-        picked,
+        createdByUserOrCompany,
       } = this
       const name = projectName.trim().replace(/ /g, '_')
       const repoLink = projectRepo.trim().replace(/ /g, '_')
@@ -129,7 +135,7 @@ export default defineComponent({
       let choosen = null
 
       if (this.companyname.length > 0) {
-        if (picked == 'user') {
+        if (createdByUserOrCompany == 'user') {
           choosen = await contract.methods.user(address).call()
           createdbyUser = true
         } else {
@@ -150,30 +156,23 @@ export default defineComponent({
       this.projectBalance = null
       this.projectRepo = ''
     },
-
-    async addTokens() {
-      const { contract } = this
-      await contract.methods.addBalance(200).send()
-      await this.updateAccount()
-    },
   },
   async mounted() {
     const { address, contract } = this
-
     const account = await contract.methods.user(address).call()
     if (account.registered) {
       this.account = account
     }
-
     if (account.username != null) {
       this.username = account.username
     }
-
+    this.accountBalance = account.balance
     const companyAccount = await contract.methods.company(address).call()
 
     if (companyAccount.name != null) {
       this.companyname = companyAccount.name
       this.companyAccount = companyAccount
+      this.companyAccountBalance = companyAccount.balance
     }
   },
 })
@@ -188,12 +187,14 @@ export default defineComponent({
   max-width: 500px;
   margin: auto;
 }
+
 .explanations {
-  padding: 12px;
-  font-size: 1.3rem;
-  font-weight: 300;
-  color: #777575;
+  padding: 5px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: rgb(240, 240, 240);
 }
+
 .button-link {
   display: inline;
   appearance: none;

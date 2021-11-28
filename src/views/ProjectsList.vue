@@ -35,12 +35,6 @@ export default defineComponent({
       this.account = await contract.methods.user(address).call()
       this.projectsList = await contract.methods.getProjects().call()
     },
-
-    async addTokens() {
-      const { contract } = this
-      await contract.methods.addBalance(200).send()
-      await this.updateAccount()
-    },
   },
 
   //Vue calls the mounted() hook when your component is added to the DOM.

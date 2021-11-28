@@ -37,10 +37,9 @@
 
         <div class="explanations">
           On your account on the contract, you have
-          {{ account.balance }} tokens. If you click
-          <button class="button-link" @click="addTokens">here</button>, you can
-          add some token to your account. Just give it a try! And think to put
-          an eye on Ganache!
+          {{ account.balance }} tokens.<br />
+          Add 200 token :
+          <button class="button-link" @click="addTokens">click here</button>
         </div>
       </card>
     </div>
@@ -108,7 +107,10 @@ export default defineComponent({
   margin: auto;
 }
 .explanations {
-  padding: 12px;
+  padding: 5px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: rgb(240, 240, 240);
 }
 .button-link {
   display: inline;
