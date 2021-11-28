@@ -1,3 +1,16 @@
+# Réalisations
+
+- Le projet permet de se connecter. Chaque compte utilisateur commence avec zéro token , mais une fonction permet d'augmenter les tokens. 
+- Le compte utilisateur peut créer un compte entreprise. 
+- Le compte entreprise peut avoir une balance de token qui sera déduite de la balance utilisateur. 
+- Les comptes utilisateurs comme entreprises peuvent créer des projets avec une balance de token, qui sera déduit du compte respectif. 
+- Le compte utilisateur peut créer des bounties avec des rewards. La somme sera déduite de son compte.
+- Un utilisateur peut clôturer un bounty, le reward sera ajouté à son solde. 
+- Un utilisateur peut se mettre en tant que contributeur ( à condition qu'il ne soit pas déjà dans la liste). 
+- Il existe des pages récapitulant toutes les entreprises, bounties, projects.
+
+
+
 # Build Collective
 
 Welcome to the DAAR project. The idea will be to implement an OpenCollective competitor
